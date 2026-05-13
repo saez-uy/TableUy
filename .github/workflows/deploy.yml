@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - claude/restaurant-reservation-system-uc1hq
   workflow_dispatch:
 
 permissions:

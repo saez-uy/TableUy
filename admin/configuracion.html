@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuración — Admin TableUy</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+
+<div class="admin-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="admin-sidebar">
+    <div class="sidebar-logo">TableUy <span>Panel de administración</span></div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Principal</div>
+      <a href="index.html"><span class="nav-icon">📊</span> Dashboard</a>
+      <a href="calendario.html"><span class="nav-icon">🗓</span> Calendario</a>
+      <div class="sidebar-section-label">Gestión</div>
+      <a href="reservas.html"><span class="nav-icon">📋</span> Todas las reservas</a>
+      <a href="configuracion.html" class="active"><span class="nav-icon">⚙️</span> Configuración</a>
+      <div class="sidebar-section-label">Sitio</div>
+      <a href="../reservar.html" target="_blank"><span class="nav-icon">🔗</span> Ver formulario</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">Administrador</div>
+      <button class="btn btn-ghost btn-sm w-full" id="logout-btn">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div style="display:flex;align-items:center;gap:1rem">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+        <span class="topbar-title">Configuración</span>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div id="admin-error" class="alert alert-error hidden mb-3"></div>
+      <div id="config-success" class="alert alert-success hidden mb-3"></div>
+
+      <!-- TABS -->
+      <div style="display:flex;gap:.5rem;margin-bottom:2rem;border-bottom:1px solid var(--color-border);padding-bottom:.5rem">
+        <button class="btn btn-sm btn-primary" onclick="switchTab('tab-restaurante',this)" data-tab="tab-restaurante">Restaurante</button>
+        <button class="btn btn-sm btn-outline" onclick="switchTab('tab-horarios',this)" data-tab="tab-horarios">Horarios</button>
+        <button class="btn btn-sm btn-outline" onclick="switchTab('tab-mesas',this)" data-tab="tab-mesas">Mesas</button>
+        <button class="btn btn-sm btn-outline" onclick="switchTab('tab-bloqueos',this)" data-tab="tab-bloqueos">Bloqueos</button>
+        <button class="btn btn-sm btn-outline" onclick="switchTab('tab-seguridad',this)" data-tab="tab-seguridad">Seguridad</button>
+      </div>
+
+      <!-- TAB: Restaurante -->
+      <div id="tab-restaurante" class="tab-panel">
+        <div class="card">
+          <h3 style="margin-bottom:1.5rem;font-size:1.1rem">Información del restaurante</h3>
+          <form id="form-restaurante">
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label class="form-label">Nombre del restaurante</label>
+                <input type="text" name="nombreRestaurante" class="form-control" placeholder="Mi Restaurante">
+              </div>
+              <div class="form-group full-width">
+                <label class="form-label">Dirección</label>
+                <input type="text" name="direccion" class="form-control" placeholder="Calle Principal 123, Ciudad">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Teléfono de contacto</label>
+                <input type="tel" name="telefonoContacto" class="form-control" placeholder="+598 99 000 000">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email de contacto</label>
+                <input type="email" name="emailContacto" class="form-control" placeholder="info@mirestaurante.com">
+              </div>
+            </div>
+            <div class="mt-3">
+              <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB: Horarios -->
+      <div id="tab-horarios" class="tab-panel hidden">
+        <div class="card mb-3">
+          <h3 style="margin-bottom:1.5rem;font-size:1.1rem">Horarios disponibles</h3>
+          <form id="form-horarios">
+            <div class="form-group mb-3">
+              <label class="form-label">Franjas horarias (separadas por coma)</label>
+              <input type="text" name="horarios" class="form-control" placeholder="12:30,13:00,13:30,20:00,20:30,21:00">
+              <p style="font-size:.8rem;color:var(--color-text-dim);margin-top:.4rem">Formato HH:MM, separadas por coma sin espacios</p>
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">Días de cierre semanal (separados por coma)</label>
+              <input type="text" name="diasCierre" class="form-control" placeholder="lunes,martes">
+              <p style="font-size:.8rem;color:var(--color-text-dim);margin-top:.4rem">Nombres en minúscula: lunes, martes, miercoles, jueves, viernes, sabado, domingo</p>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Anticipación mínima (horas)</label>
+                <input type="number" name="minAnticipacionHoras" class="form-control" min="0" max="72" placeholder="2">
+                <p style="font-size:.8rem;color:var(--color-text-dim);margin-top:.4rem">Horas mínimas antes del turno para poder reservar</p>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Máximo días futuros</label>
+                <input type="number" name="maxDiasFuturos" class="form-control" min="1" max="365" placeholder="30">
+                <p style="font-size:.8rem;color:var(--color-text-dim);margin-top:.4rem">Cuántos días al futuro permite reservar</p>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Máx. personas por reserva</label>
+                <input type="number" name="maxPersonasPorReserva" class="form-control" min="1" max="50" placeholder="10">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Anticipación mínima para cancelar (horas)</label>
+                <input type="number" name="minHorasCancelar" class="form-control" min="0" max="168" placeholder="4">
+              </div>
+            </div>
+            <div class="mt-3">
+              <button type="submit" class="btn btn-primary">Guardar horarios</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB: Mesas -->
+      <div id="tab-mesas" class="tab-panel hidden">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+          <h3 style="font-size:1.1rem">Gestión de mesas</h3>
+          <button class="btn btn-primary btn-sm" onclick="openModal('modal-nueva-mesa')">+ Nueva mesa</button>
+        </div>
+
+        <div id="mesas-container" class="mesas-grid">
+          <div class="skeleton skeleton-rect" style="height:140px;border-radius:12px"></div>
+          <div class="skeleton skeleton-rect" style="height:140px;border-radius:12px"></div>
+          <div class="skeleton skeleton-rect" style="height:140px;border-radius:12px"></div>
+        </div>
+      </div>
+
+      <!-- TAB: Bloqueos -->
+      <div id="tab-bloqueos" class="tab-panel hidden">
+        <div class="card mb-3">
+          <h3 style="margin-bottom:1.5rem;font-size:1.1rem">Bloquear fecha o franja horaria</h3>
+          <form id="form-bloqueo">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Fecha *</label>
+                <input type="date" name="fecha" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Tipo</label>
+                <select name="tipo" class="form-control" onchange="toggleHoraBloqueo(this.value)">
+                  <option value="dia">Día completo</option>
+                  <option value="franja">Franja horaria</option>
+                </select>
+              </div>
+              <div class="form-group" id="hora-bloqueo-wrap" style="display:none">
+                <label class="form-label">Hora</label>
+                <input type="time" name="hora" class="form-control">
+              </div>
+              <div class="form-group full-width">
+                <label class="form-label">Motivo (opcional)</label>
+                <input type="text" name="motivo" class="form-control" placeholder="Ej: Evento privado, mantenimiento...">
+              </div>
+            </div>
+            <div class="mt-3">
+              <button type="submit" class="btn btn-primary">Bloquear</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="table-wrapper">
+          <div class="table-scroll">
+            <table>
+              <thead><tr>
+                <th>Fecha</th><th>Tipo</th><th>Hora</th><th>Motivo</th><th>Acción</th>
+              </tr></thead>
+              <tbody id="bloqueados-tbody">
+                <tr><td colspan="5" style="text-align:center;color:var(--color-text-muted);padding:2rem">Cargando…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: Seguridad -->
+      <div id="tab-seguridad" class="tab-panel hidden">
+        <div class="card">
+          <h3 style="margin-bottom:1.5rem;font-size:1.1rem">Cambiar contraseña de administrador</h3>
+          <form id="form-password">
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label class="form-label">Nueva contraseña</label>
+                <input type="password" name="admin_password" class="form-control" placeholder="••••••••" minlength="6" required>
+              </div>
+              <div class="form-group full-width">
+                <label class="form-label">Confirmar contraseña</label>
+                <input type="password" id="confirm-password" class="form-control" placeholder="••••••••" required>
+              </div>
+            </div>
+            <div id="password-error" class="alert alert-error hidden mt-2 mb-2"></div>
+            <div class="mt-3">
+              <button type="submit" class="btn btn-primary">Cambiar contraseña</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div><!-- /admin-content -->
+  </main>
+
+</div>
+
+<!-- MODAL: Nueva mesa -->
+<div class="modal-overlay" id="modal-nueva-mesa">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Nueva mesa</h3>
+      <button class="modal-close" onclick="closeModal('modal-nueva-mesa')">×</button>
+    </div>
+    <form id="form-nueva-mesa">
+      <div class="form-group mb-3">
+        <label class="form-label">Número de mesa *</label>
+        <input type="number" name="numero" class="form-control" min="1" required placeholder="7">
+      </div>
+      <div class="form-group mb-3">
+        <label class="form-label">Capacidad *</label>
+        <input type="number" name="capacidad" class="form-control" min="1" max="30" required placeholder="4">
+      </div>
+      <div class="form-group mb-3">
+        <label class="form-label">Descripción</label>
+        <input type="text" name="descripcion" class="form-control" placeholder="Ej: Terraza, ventana, sala privada…">
+      </div>
+      <div class="flex justify-between gap-2 mt-3">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('modal-nueva-mesa')">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Crear mesa</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL: Editar mesa -->
+<div class="modal-overlay" id="modal-editar-mesa">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Editar mesa</h3>
+      <button class="modal-close" onclick="closeModal('modal-editar-mesa')">×</button>
+    </div>
+    <form id="form-editar-mesa">
+      <input type="hidden" name="id">
+      <div class="form-group mb-3">
+        <label class="form-label">Número de mesa</label>
+        <input type="number" name="numero" class="form-control" required>
+      </div>
+      <div class="form-group mb-3">
+        <label class="form-label">Capacidad</label>
+        <input type="number" name="capacidad" class="form-control" min="1" max="30" required>
+      </div>
+      <div class="form-group mb-3">
+        <label class="form-label">Descripción</label>
+        <input type="text" name="descripcion" class="form-control">
+      </div>
+      <div class="form-group mb-3">
+        <label class="form-label">Estado</label>
+        <select name="activa" class="form-control">
+          <option value="true">Activa</option>
+          <option value="false">Inactiva</option>
+        </select>
+      </div>
+      <div class="flex justify-between gap-2 mt-3">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('modal-editar-mesa')">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/admin.js"></script>
+<script>
+// ============================================================
+// TABS
+// ============================================================
+function switchTab(tabId, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+  document.getElementById(tabId).classList.remove('hidden');
+  document.querySelectorAll('[data-tab]').forEach(b => {
+    b.classList.toggle('btn-primary', b === btn);
+    b.classList.toggle('btn-outline', b !== btn);
+  });
+
+  if (tabId === 'tab-mesas') loadMesas();
+  if (tabId === 'tab-bloqueos') loadBloqueados();
+  if (tabId === 'tab-restaurante' || tabId === 'tab-horarios') loadConfigForms();
+}
+
+// ============================================================
+// CARGAR CONFIG EN FORMULARIOS
+// ============================================================
+async function loadConfigForms() {
+  try {
+    const config = await getConfigPublica();
+
+    ['nombreRestaurante','direccion','telefonoContacto','emailContacto'].forEach(k => {
+      const el = document.querySelector(`[name="${k}"]`);
+      if (el && config[k]) el.value = config[k];
+    });
+
+    ['horarios','diasCierre','minAnticipacionHoras','maxDiasFuturos','maxPersonasPorReserva','minHorasCancelar'].forEach(k => {
+      const el = document.querySelector(`[name="${k}"]`);
+      if (el && config[k] !== undefined) el.value = config[k];
+    });
+  } catch (e) {
+    showAdminToast('Error al cargar configuración', 'error');
+  }
+}
+
+// ============================================================
+// GUARDAR CONFIG RESTAURANTE
+// ============================================================
+document.getElementById('form-restaurante').addEventListener('submit', async e => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button[type=submit]');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Guardando…';
+
+  const config = {};
+  new FormData(form).forEach((v, k) => config[k] = v);
+
+  try {
+    const result = await updateConfigAdmin(config);
+    if (result.error) { showAdminToast(result.error, 'error'); }
+    else { showAdminToast('Configuración guardada', 'success'); }
+  } catch (e) { showAdminToast('Error al guardar', 'error'); }
+
+  btn.disabled = false;
+  btn.textContent = 'Guardar cambios';
+});
+
+// ============================================================
+// GUARDAR HORARIOS
+// ============================================================
+document.getElementById('form-horarios').addEventListener('submit', async e => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button[type=submit]');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>';
+
+  const config = {};
+  new FormData(form).forEach((v, k) => config[k] = v);
+
+  try {
+    const result = await updateConfigAdmin(config);
+    if (result.error) { showAdminToast(result.error, 'error'); }
+    else { showAdminToast('Horarios guardados', 'success'); }
+  } catch (e) { showAdminToast('Error al guardar', 'error'); }
+
+  btn.disabled = false;
+  btn.textContent = 'Guardar horarios';
+});
+
+// ============================================================
+// PASSWORD
+// ============================================================
+document.getElementById('form-password').addEventListener('submit', async e => {
+  e.preventDefault();
+  const form = e.target;
+  const errorEl = document.getElementById('password-error');
+  const pass = form.querySelector('[name=admin_password]').value;
+  const confirm = document.getElementById('confirm-password').value;
+
+  if (pass !== confirm) {
+    errorEl.textContent = 'Las contraseñas no coinciden';
+    errorEl.classList.remove('hidden');
+    return;
+  }
+  errorEl.classList.add('hidden');
+
+  const btn = form.querySelector('button[type=submit]');
+  btn.disabled = true;
+
+  try {
+    const result = await updateConfigAdmin({ admin_password: pass });
+    if (result.error) { showAdminToast(result.error, 'error'); }
+    else {
+      showAdminToast('Contraseña actualizada. Debes iniciar sesión nuevamente.', 'success');
+      setTimeout(() => { clearAdminToken(); window.location.href = '/admin/index.html'; }, 2000);
+    }
+  } catch (e) { showAdminToast('Error al actualizar', 'error'); }
+
+  btn.disabled = false;
+  btn.textContent = 'Cambiar contraseña';
+});
+
+// ============================================================
+// MESAS
+// ============================================================
+async function loadMesas() {
+  const container = document.getElementById('mesas-container');
+
+  try {
+    const result = await getMesasAdmin();
+    if (result.error) { showAdminToast(result.error, 'error'); return; }
+    renderMesas(result.mesas);
+  } catch (e) {
+    showAdminToast('Error al cargar mesas', 'error');
+  }
+}
+
+function renderMesas(mesas) {
+  const container = document.getElementById('mesas-container');
+  if (!mesas.length) {
+    container.innerHTML = '<p style="color:var(--color-text-muted)">No hay mesas configuradas.</p>';
+    return;
+  }
+
+  container.innerHTML = mesas.map(m => `
+    <div class="mesa-card${m.activa ? '' : ' inactive'}">
+      <div class="mesa-numero">#${m.numero}</div>
+      <div class="mesa-capacidad">👥 ${m.capacidad} personas</div>
+      <div class="mesa-desc">${m.descripcion || 'Sin descripción'}</div>
+      <div style="margin-bottom:.75rem">
+        <span class="badge ${m.activa ? 'badge-success' : 'badge-secondary'}">${m.activa ? 'Activa' : 'Inactiva'}</span>
+      </div>
+      <div class="mesa-actions">
+        <button class="btn btn-sm btn-outline" onclick="editarMesa(${JSON.stringify(m).replace(/"/g,'&quot;')})">Editar</button>
+        <button class="btn btn-sm btn-ghost" onclick="toggleMesa('${m.id}', ${!m.activa})">${m.activa ? 'Desactivar' : 'Activar'}</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function editarMesa(mesa) {
+  const form = document.getElementById('form-editar-mesa');
+  form.querySelector('[name=id]').value = mesa.id;
+  form.querySelector('[name=numero]').value = mesa.numero;
+  form.querySelector('[name=capacidad]').value = mesa.capacidad;
+  form.querySelector('[name=descripcion]').value = mesa.descripcion || '';
+  form.querySelector('[name=activa]').value = String(mesa.activa);
+  openModal('modal-editar-mesa');
+}
+
+async function toggleMesa(id, activa) {
+  try {
+    const result = await updateMesaAdmin({ id, activa });
+    if (result.error) { showAdminToast(result.error, 'error'); return; }
+    showAdminToast(`Mesa ${activa ? 'activada' : 'desactivada'}`, 'success');
+    loadMesas();
+  } catch (e) { showAdminToast('Error al actualizar mesa', 'error'); }
+}
+
+document.getElementById('form-nueva-mesa').addEventListener('submit', async e => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button[type=submit]');
+  btn.disabled = true;
+
+  try {
+    const result = await crearMesaAdmin({
+      numero: parseInt(form.numero.value),
+      capacidad: parseInt(form.capacidad.value),
+      descripcion: form.descripcion.value
+    });
+    if (result.error) { showAdminToast(result.error, 'error'); }
+    else { showAdminToast('Mesa creada', 'success'); closeModal('modal-nueva-mesa'); form.reset(); loadMesas(); }
+  } catch (e) { showAdminToast('Error al crear mesa', 'error'); }
+
+  btn.disabled = false;
+  btn.textContent = 'Crear mesa';
+});
+
+document.getElementById('form-editar-mesa').addEventListener('submit', async e => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button[type=submit]');
+  btn.disabled = true;
+
+  try {
+    const result = await updateMesaAdmin({
+      id: form.id.value,
+      numero: parseInt(form.numero.value),
+      capacidad: parseInt(form.capacidad.value),
+      descripcion: form.descripcion.value,
+      activa: form.activa.value === 'true'
+    });
+    if (result.error) { showAdminToast(result.error, 'error'); }
+    else { showAdminToast('Mesa actualizada', 'success'); closeModal('modal-editar-mesa'); loadMesas(); }
+  } catch (e) { showAdminToast('Error al actualizar mesa', 'error'); }
+
+  btn.disabled = false;
+  btn.textContent = 'Guardar cambios';
+});
+
+// ============================================================
+// BLOQUEOS
+// ============================================================
+function toggleHoraBloqueo(tipo) {
+  const wrap = document.getElementById('hora-bloqueo-wrap');
+  wrap.style.display = tipo === 'franja' ? 'flex' : 'none';
+  wrap.style.flexDirection = 'column';
+}
+
+async function loadBloqueados() {
+  const tbody = document.getElementById('bloqueados-tbody');
+
+  try {
+    const result = await getBloqueadosAdmin();
+    if (result.error) { showAdminToast(result.error, 'error'); return; }
+    renderBloqueados(result.bloqueados);
+  } catch (e) {
+    showAdminToast('Error al cargar bloqueos', 'error');
+  }
+}
+
+function renderBloqueados(bloqueados) {
+  const tbody = document.getElementById('bloqueados-tbody');
+  if (!bloqueados.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--color-text-muted);padding:2rem">No hay bloqueos activos</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = bloqueados.map(b => `
+    <tr>
+      <td>${formatFechaCorta(b.fecha)}</td>
+      <td>${b.tipo === 'dia' ? 'Día completo' : 'Franja'}</td>
+      <td>${b.hora || '—'}</td>
+      <td>${b.motivo || '—'}</td>
+      <td>
+        <button class="action-btn cancel" onclick="eliminarBloqueo('${b.id}')" title="Eliminar bloqueo">✕</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+document.getElementById('form-bloqueo').addEventListener('submit', async e => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button[type=submit]');
+  btn.disabled = true;
+
+  const datos = {
+    fecha: form.fecha.value,
+    tipo: form.tipo.value,
+    hora: form.tipo.value === 'franja' ? form.hora.value : '',
+    motivo: form.motivo.value
+  };
+
+  try {
+    const result = await bloquearFechaAdmin(datos);
+    if (result.error) { showAdminToast(result.error, 'error'); }
+    else { showAdminToast('Fecha bloqueada', 'success'); form.reset(); loadBloqueados(); }
+  } catch (e) { showAdminToast('Error al bloquear', 'error'); }
+
+  btn.disabled = false;
+  btn.textContent = 'Bloquear';
+});
+
+async function eliminarBloqueo(id) {
+  if (!confirm('¿Eliminar este bloqueo?')) return;
+  try {
+    const result = await desbloquearFechaAdmin(id);
+    if (result.error) { showAdminToast(result.error, 'error'); return; }
+    showAdminToast('Bloqueo eliminado', 'success');
+    loadBloqueados();
+  } catch (e) { showAdminToast('Error al eliminar bloqueo', 'error'); }
+}
+
+// ============================================================
+// INICIALIZAR
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  loadConfigForms();
+
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) overlay.classList.remove('active');
+    });
+  });
+});
+</script>
+
+</body>
+</html>

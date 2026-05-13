@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reservar mesa — TableUy</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/reserva.css">
+  <style>
+    @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="navbar-brand">TableUy</a>
+  <ul class="navbar-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="mis-reservas.html">Mis reservas</a></li>
+  </ul>
+</nav>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="spinner" style="width:48px;height:48px;border-width:3px"></div>
+  <p id="loading-msg">Cargando…</p>
+</div>
+
+<!-- PÁGINA -->
+<div class="reserva-page">
+
+  <!-- ERROR GLOBAL -->
+  <div id="wizard-error" class="alert alert-error hidden" style="max-width:640px;width:100%;margin-bottom:1.5rem"></div>
+
+  <!-- PROGRESS BAR -->
+  <div class="wizard-progress" id="wizard-progress">
+    <div class="wizard-steps">
+      <div class="wizard-step active" id="step-indicator-1">
+        <div class="step-circle">1</div>
+        <div class="step-label">Fecha</div>
+      </div>
+      <div class="progress-line" id="progress-line-1"></div>
+      <div class="wizard-step" id="step-indicator-2">
+        <div class="step-circle">2</div>
+        <div class="step-label">Horario</div>
+      </div>
+      <div class="progress-line" id="progress-line-2"></div>
+      <div class="wizard-step" id="step-indicator-3">
+        <div class="step-circle">3</div>
+        <div class="step-label">Datos</div>
+      </div>
+      <div class="progress-line" id="progress-line-3"></div>
+      <div class="wizard-step" id="step-indicator-4">
+        <div class="step-circle">4</div>
+        <div class="step-label">Confirmación</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WIZARD WRAP -->
+  <div class="wizard-container" id="wizard-wrap">
+
+    <!-- PASO 1: FECHA -->
+    <div class="wizard-panel active" id="paso-1">
+      <h2 class="panel-title">Elige una fecha</h2>
+      <p class="panel-subtitle">Los días disponibles aparecen resaltados en el calendario.</p>
+
+      <div class="calendar-wrapper">
+        <div class="calendar-header">
+          <button class="cal-nav" onclick="prevMonth()" aria-label="Mes anterior">‹</button>
+          <span class="cal-month-title" id="cal-month-title"></span>
+          <button class="cal-nav" onclick="nextMonth()" aria-label="Mes siguiente">›</button>
+        </div>
+        <div class="calendar-grid" id="calendar-day-names">
+          <div class="cal-day-name">Dom</div>
+          <div class="cal-day-name">Lun</div>
+          <div class="cal-day-name">Mar</div>
+          <div class="cal-day-name">Mié</div>
+          <div class="cal-day-name">Jue</div>
+          <div class="cal-day-name">Vie</div>
+          <div class="cal-day-name">Sáb</div>
+        </div>
+        <div class="calendar-grid" id="calendar-grid"></div>
+      </div>
+
+      <div class="wizard-nav first">
+        <button class="btn btn-primary" id="btn-next-1" onclick="nextStep()" disabled>
+          Continuar →
+        </button>
+      </div>
+    </div>
+
+    <!-- PASO 2: HORA Y PERSONAS -->
+    <div class="wizard-panel" id="paso-2">
+      <h2 class="panel-title">Horario y personas</h2>
+      <p class="panel-subtitle">Selecciona la hora y cuántas personas serán.</p>
+
+      <div class="slots-header">
+        <div class="selected-date-display" id="selected-date-display"></div>
+      </div>
+
+      <div class="slots-grid" id="slots-container">
+        <!-- Slots cargados dinámicamente -->
+      </div>
+
+      <div class="form-group mb-3">
+        <label class="form-label">Número de personas</label>
+        <div class="personas-selector">
+          <button class="personas-btn" id="personas-minus" type="button">−</button>
+          <span class="personas-count" id="personas-count">2</span>
+          <span class="personas-label">personas</span>
+          <button class="personas-btn" id="personas-plus" type="button">+</button>
+        </div>
+      </div>
+
+      <div class="wizard-nav">
+        <button class="btn btn-ghost" onclick="prevStep()">← Volver</button>
+        <button class="btn btn-primary" id="btn-next-2" onclick="nextStep()" disabled>Continuar →</button>
+      </div>
+    </div>
+
+    <!-- PASO 3: DATOS PERSONALES -->
+    <div class="wizard-panel" id="paso-3">
+      <h2 class="panel-title">Tus datos</h2>
+      <p class="panel-subtitle">Completa la información para confirmar tu reserva.</p>
+
+      <form id="form-datos" novalidate>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="nombre">Nombre completo *</label>
+            <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Juan García" required autocomplete="name">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="telefono">Teléfono *</label>
+            <input type="tel" id="telefono" name="telefono" class="form-control" placeholder="+598 99 000 000" required autocomplete="tel">
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label" for="email">Email *</label>
+            <input type="email" id="email" name="email" class="form-control" placeholder="nombre@email.com" required autocomplete="email">
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label" for="alergias">Alergias o restricciones alimentarias</label>
+            <input type="text" id="alergias" name="alergias" class="form-control" placeholder="Ej: sin gluten, alérgico a mariscos…">
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label" for="notas">Notas o peticiones especiales</label>
+            <textarea id="notas" name="notas" class="form-control" placeholder="Ej: celebramos un cumpleaños, necesitamos silla para bebé…"></textarea>
+          </div>
+        </div>
+
+        <div class="wizard-nav">
+          <button type="button" class="btn btn-ghost" onclick="prevStep()">← Volver</button>
+          <button type="button" class="btn btn-primary" id="btn-next-3" onclick="nextStep()">Revisar reserva →</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- PASO 4: RESUMEN -->
+    <div class="wizard-panel" id="paso-4">
+      <h2 class="panel-title">Confirmar reserva</h2>
+      <p class="panel-subtitle">Revisa los detalles antes de confirmar.</p>
+
+      <div class="confirmation-card" id="resumen">
+        <ul class="detail-list">
+          <li><span class="label">Fecha</span><span class="value" id="resumen-fecha">—</span></li>
+          <li><span class="label">Hora</span><span class="value" id="resumen-hora">—</span></li>
+          <li><span class="label">Personas</span><span class="value" id="resumen-personas">—</span></li>
+          <li><span class="label">Nombre</span><span class="value" id="resumen-nombre">—</span></li>
+          <li><span class="label">Email</span><span class="value" id="resumen-email">—</span></li>
+          <li><span class="label">Teléfono</span><span class="value" id="resumen-telefono">—</span></li>
+          <li id="resumen-alergias-row"><span class="label">Alergias</span><span class="value" id="resumen-alergias">—</span></li>
+          <li id="resumen-notas-row"><span class="label">Notas</span><span class="value" id="resumen-notas">—</span></li>
+        </ul>
+      </div>
+
+      <p style="font-size:.82rem;color:var(--color-text-dim);margin-bottom:1.5rem">
+        Al confirmar, recibirás un email con el código de tu reserva. Puedes cancelar con la antelación indicada en nuestra política.
+      </p>
+
+      <div class="wizard-nav">
+        <button class="btn btn-ghost" onclick="prevStep()">← Volver</button>
+        <button class="btn btn-primary btn-lg" id="btn-confirmar" onclick="confirmarReserva()">Confirmar reserva ✓</button>
+      </div>
+    </div>
+
+  </div><!-- /wizard-wrap -->
+
+  <!-- PANTALLA DE ÉXITO -->
+  <div id="success-screen" class="hidden" style="max-width:540px;width:100%;text-align:center;animation:fadeIn 0.5s ease">
+    <div class="confirmation-card">
+      <div class="confirmation-header">
+        <div class="check-icon">✓</div>
+        <h2 style="font-size:1.6rem;margin-bottom:.5rem">¡Reserva confirmada!</h2>
+        <p style="color:var(--color-text-muted);margin:0">Gracias, <strong id="success-nombre"></strong></p>
+      </div>
+
+      <p style="margin-bottom:.5rem;color:var(--color-text-muted);font-size:.85rem">Tu código de reserva</p>
+      <div class="reserva-code" id="codigo-generado"></div>
+
+      <ul class="detail-list mt-3">
+        <li><span class="label">Fecha</span><span class="value" id="success-fecha"></span></li>
+        <li><span class="label">Hora</span><span class="value" id="success-hora"></span></li>
+        <li><span class="label">Confirmación enviada a</span><span class="value" id="success-email"></span></li>
+      </ul>
+
+      <p style="margin-top:1.5rem;font-size:.82rem;color:var(--color-text-dim)">
+        Guarda este código para consultar o cancelar tu reserva.
+      </p>
+    </div>
+
+    <div class="flex gap-2 mt-3 justify-between" style="flex-wrap:wrap">
+      <a href="mis-reservas.html" class="btn btn-outline">Ver mi reserva</a>
+      <a href="index.html" class="btn btn-primary">Volver al inicio</a>
+    </div>
+  </div>
+
+</div><!-- /reserva-page -->
+
+<script src="assets/js/api.js"></script>
+<script src="assets/js/reserva.js"></script>
+
+</body>
+</html>

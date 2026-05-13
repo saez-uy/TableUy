@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis reservas — TableUy</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="navbar-brand">TableUy</a>
+  <ul class="navbar-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="reservar.html" class="navbar-cta">Reservar</a></li>
+  </ul>
+</nav>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="spinner" style="width:40px;height:40px;border-width:3px"></div>
+  <p>Buscando reserva…</p>
+</div>
+
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:5rem 1.5rem 3rem">
+  <div style="width:100%;max-width:520px">
+
+    <!-- FORMULARIO DE BÚSQUEDA -->
+    <div id="search-section">
+      <div style="text-align:center;margin-bottom:2.5rem">
+        <span style="display:inline-block;font-size:.75rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent);margin-bottom:1rem;padding:.35rem 1rem;border:1px solid rgba(201,169,110,.3);border-radius:50px">Gestiona tu reserva</span>
+        <h1 style="font-size:2.2rem;margin-bottom:.5rem">Mis reservas</h1>
+        <p style="color:var(--color-text-muted)">Ingresa tu email y código de reserva para consultar o cancelar.</p>
+      </div>
+
+      <div class="card">
+        <form id="search-form" novalidate>
+          <div class="form-group mb-3">
+            <label class="form-label" for="search-email">Email</label>
+            <input type="email" id="search-email" class="form-control" placeholder="nombre@email.com" required autocomplete="email">
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label" for="search-codigo">Código de reserva</label>
+            <input type="text" id="search-codigo" class="form-control" placeholder="Ej: AB3K7PQX" required
+              style="text-transform:uppercase;letter-spacing:.1em;font-family:monospace;font-size:1rem">
+          </div>
+          <div id="search-error" class="alert alert-error hidden mb-3"></div>
+          <button type="submit" class="btn btn-primary w-full">Buscar reserva</button>
+        </form>
+      </div>
+
+      <p style="text-align:center;margin-top:1.5rem;font-size:.85rem;color:var(--color-text-dim)">
+        ¿No tienes reserva aún? <a href="reservar.html">Reserva aquí</a>
+      </p>
+    </div>
+
+    <!-- RESULTADO DE RESERVA -->
+    <div id="result-section" class="hidden">
+      <div style="text-align:center;margin-bottom:2rem">
+        <h2>Tu reserva</h2>
+      </div>
+
+      <div class="card" id="reserva-card">
+        <!-- Llenado por JS -->
+      </div>
+
+      <div id="cancel-section" class="hidden">
+        <div class="card mt-3" style="border-color:rgba(214,69,69,.2)">
+          <h3 style="font-size:1rem;margin-bottom:.75rem;color:var(--color-danger)">Cancelar reserva</h3>
+          <p style="font-size:.85rem;color:var(--color-text-muted);margin-bottom:1rem">
+            Si cancelas, no podremos garantizar la disponibilidad si decides reservar nuevamente.
+          </p>
+          <div id="cancel-error" class="alert alert-error hidden mb-2"></div>
+          <button class="btn btn-danger btn-sm" id="btn-cancelar" onclick="cancelarReservaCliente()">
+            Cancelar mi reserva
+          </button>
+        </div>
+      </div>
+
+      <div class="flex gap-2 mt-3" style="flex-wrap:wrap;justify-content:space-between">
+        <button class="btn btn-ghost" onclick="resetSearch()">← Buscar otra</button>
+        <a href="reservar.html" class="btn btn-outline">Nueva reserva</a>
+      </div>
+    </div>
+
+    <!-- CANCELACIÓN EXITOSA -->
+    <div id="cancelled-section" class="hidden" style="text-align:center">
+      <div style="width:64px;height:64px;background:rgba(214,69,69,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 1rem">✕</div>
+      <h2 style="margin-bottom:.5rem">Reserva cancelada</h2>
+      <p style="color:var(--color-text-muted);margin-bottom:2rem">Tu reserva ha sido cancelada. Recibirás una confirmación por email.</p>
+      <a href="reservar.html" class="btn btn-primary">Hacer nueva reserva</a>
+    </div>
+
+  </div>
+</div>
+
+<script src="assets/js/api.js"></script>
+<script>
+  let reservaActual = null;
+
+  document.getElementById('search-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = document.getElementById('search-email').value.trim();
+    const codigo = document.getElementById('search-codigo').value.trim().toUpperCase();
+    const errorEl = document.getElementById('search-error');
+    const btn = e.target.querySelector('button[type=submit]');
+
+    if (!email || !codigo) return;
+
+    errorEl.classList.add('hidden');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>';
+    document.getElementById('loading-overlay').classList.add('active');
+
+    try {
+      const result = await getReserva(email, codigo);
+      document.getElementById('loading-overlay').classList.remove('active');
+
+      if (result.error) {
+        errorEl.textContent = result.error;
+        errorEl.classList.remove('hidden');
+        btn.disabled = false;
+        btn.textContent = 'Buscar reserva';
+        return;
+      }
+
+      reservaActual = { ...result.reserva, email };
+      mostrarReserva(result.reserva);
+
+    } catch (err) {
+      document.getElementById('loading-overlay').classList.remove('active');
+      errorEl.textContent = 'Error de conexión. Intenta de nuevo.';
+      errorEl.classList.remove('hidden');
+      btn.disabled = false;
+      btn.textContent = 'Buscar reserva';
+    }
+  });
+
+  function mostrarReserva(r) {
+    document.getElementById('search-section').classList.add('hidden');
+    document.getElementById('result-section').classList.remove('hidden');
+
+    const badge = estadoBadge(r.estado);
+    const card = document.getElementById('reserva-card');
+
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+        <div>
+          <div style="font-size:.75rem;color:var(--color-text-dim);margin-bottom:.3rem">Código de reserva</div>
+          <div style="font-family:monospace;font-size:1.4rem;letter-spacing:.1em;color:var(--color-accent);font-weight:700">${r.codigo}</div>
+        </div>
+        <span class="badge ${badge.class}">${badge.label}</span>
+      </div>
+      <ul class="detail-list">
+        <li><span class="label">Fecha</span><span class="value">${formatFecha(r.fecha)}</span></li>
+        <li><span class="label">Hora</span><span class="value">${r.hora}</span></li>
+        <li><span class="label">Personas</span><span class="value">${r.personas}</span></li>
+        <li><span class="label">Mesa</span><span class="value">#${r.mesaNumero}</span></li>
+        <li><span class="label">Nombre</span><span class="value">${r.nombre}</span></li>
+        ${r.notas ? `<li><span class="label">Notas</span><span class="value" style="text-align:right;max-width:220px">${r.notas}</span></li>` : ''}
+        ${r.alergias ? `<li><span class="label">Alergias</span><span class="value" style="text-align:right;max-width:220px">${r.alergias}</span></li>` : ''}
+      </ul>
+    `;
+
+    const cancelSection = document.getElementById('cancel-section');
+    const puedeCancel = r.estado !== 'cancelada' && r.estado !== 'completada' && r.estado !== 'no-show';
+    if (puedeCancel) {
+      cancelSection.classList.remove('hidden');
+    } else {
+      cancelSection.classList.add('hidden');
+    }
+  }
+
+  async function cancelarReservaCliente() {
+    if (!confirm('¿Confirmas que deseas cancelar tu reserva?')) return;
+
+    const btn = document.getElementById('btn-cancelar');
+    const errorEl = document.getElementById('cancel-error');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>';
+    errorEl.classList.add('hidden');
+
+    try {
+      const result = await cancelarReserva(reservaActual.email, reservaActual.codigo);
+
+      if (result.error) {
+        errorEl.textContent = result.error;
+        errorEl.classList.remove('hidden');
+        btn.disabled = false;
+        btn.textContent = 'Cancelar mi reserva';
+        return;
+      }
+
+      document.getElementById('result-section').classList.add('hidden');
+      document.getElementById('cancelled-section').classList.remove('hidden');
+
+    } catch (err) {
+      errorEl.textContent = 'Error de conexión. Intenta de nuevo.';
+      errorEl.classList.remove('hidden');
+      btn.disabled = false;
+      btn.textContent = 'Cancelar mi reserva';
+    }
+  }
+
+  function resetSearch() {
+    reservaActual = null;
+    document.getElementById('result-section').classList.add('hidden');
+    document.getElementById('search-section').classList.remove('hidden');
+    document.getElementById('search-form').reset();
+    document.getElementById('search-error').classList.add('hidden');
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TableUy — Reservas de restaurante</title>
+  <meta name="description" content="Reserve su mesa en pocos pasos. Sistema de reservas elegante para restaurantes.">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <style>
+    @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+    .hero-content > * { animation: fadeIn 0.6s ease both; }
+    .hero-eyebrow { animation-delay: 0.1s; }
+    .hero h1 { animation-delay: 0.2s; }
+    .hero-desc { animation-delay: 0.3s; }
+    .hero-actions { animation-delay: 0.4s; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="navbar-brand">TableUy</a>
+  <button class="navbar-toggle" onclick="this.nextElementSibling.classList.toggle('open')" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="navbar-links" id="navbar-links">
+    <li><a href="#experiencia">Experiencia</a></li>
+    <li><a href="#como-funciona">Cómo funciona</a></li>
+    <li><a href="mis-reservas.html">Mis reservas</a></li>
+    <li><a href="reservar.html" class="navbar-cta">Reservar mesa</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <span class="hero-eyebrow">Bienvenido</span>
+    <h1>Una mesa <em>perfecta</em><br>para cada momento</h1>
+    <p class="hero-desc">Reserve su mesa en segundos. Nos encargamos de los detalles para que usted disfrute la experiencia.</p>
+    <div class="hero-actions">
+      <a href="reservar.html" class="btn btn-primary btn-lg">Reservar ahora</a>
+      <a href="mis-reservas.html" class="btn btn-outline btn-lg">Ver mi reserva</a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" id="experiencia">
+  <div class="container">
+    <div class="section-header">
+      <span class="hero-eyebrow">La experiencia</span>
+      <h2>Todo pensado para <em style="font-style:italic;color:var(--color-accent)">usted</em></h2>
+      <div class="divider"></div>
+      <p>Desde la reserva hasta el postre, cuidamos cada detalle.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">🗓</span>
+        <h3>Reserva en minutos</h3>
+        <p>Nuestro wizard de 4 pasos hace que reservar sea sencillo e intuitivo desde cualquier dispositivo.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📩</span>
+        <h3>Confirmación inmediata</h3>
+        <p>Recibe un email con todos los detalles de tu reserva y un código único para gestionarla.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🔔</span>
+        <h3>Recordatorio automático</h3>
+        <p>Te enviamos un recordatorio 24 horas antes para que no olvides tu cita especial.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">✏️</span>
+        <h3>Gestión flexible</h3>
+        <p>Cancela o modifica con antelación directamente desde la web, sin llamadas ni esperas.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CÓMO FUNCIONA -->
+<section class="section" id="como-funciona" style="background:var(--color-bg-2)">
+  <div class="container">
+    <div class="section-header">
+      <span class="hero-eyebrow">El proceso</span>
+      <h2>Así de <em style="font-style:italic;color:var(--color-accent)">simple</em></h2>
+      <div class="divider"></div>
+    </div>
+    <div class="grid grid-2" style="max-width:800px;margin:0 auto">
+      <div class="card" style="display:flex;gap:1.25rem;align-items:flex-start">
+        <div style="min-width:44px;height:44px;background:rgba(201,169,110,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--color-accent);font-family:var(--font-serif);font-size:1.2rem;font-weight:700">1</div>
+        <div>
+          <h3 style="font-size:1.05rem;margin-bottom:.4rem">Elige la fecha</h3>
+          <p style="font-size:.9rem;color:var(--color-text-muted);margin:0">Selecciona el día que más te convenga en nuestro calendario visual.</p>
+        </div>
+      </div>
+      <div class="card" style="display:flex;gap:1.25rem;align-items:flex-start">
+        <div style="min-width:44px;height:44px;background:rgba(201,169,110,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--color-accent);font-family:var(--font-serif);font-size:1.2rem;font-weight:700">2</div>
+        <div>
+          <h3 style="font-size:1.05rem;margin-bottom:.4rem">Hora y personas</h3>
+          <p style="font-size:.9rem;color:var(--color-text-muted);margin:0">Selecciona el horario disponible y la cantidad de comensales.</p>
+        </div>
+      </div>
+      <div class="card" style="display:flex;gap:1.25rem;align-items:flex-start">
+        <div style="min-width:44px;height:44px;background:rgba(201,169,110,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--color-accent);font-family:var(--font-serif);font-size:1.2rem;font-weight:700">3</div>
+        <div>
+          <h3 style="font-size:1.05rem;margin-bottom:.4rem">Tus datos</h3>
+          <p style="font-size:.9rem;color:var(--color-text-muted);margin:0">Ingresa tu nombre, email y cualquier requerimiento especial.</p>
+        </div>
+      </div>
+      <div class="card" style="display:flex;gap:1.25rem;align-items:flex-start">
+        <div style="min-width:44px;height:44px;background:rgba(201,169,110,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--color-accent);font-family:var(--font-serif);font-size:1.2rem;font-weight:700">4</div>
+        <div>
+          <h3 style="font-size:1.05rem;margin-bottom:.4rem">¡Listo!</h3>
+          <p style="font-size:.9rem;color:var(--color-text-muted);margin:0">Recibes la confirmación por email con tu código de reserva único.</p>
+        </div>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <a href="reservar.html" class="btn btn-primary btn-lg">Comenzar reserva</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">TableUy</div>
+  <div class="footer-links">
+    <a href="reservar.html">Reservar</a>
+    <a href="mis-reservas.html">Mis reservas</a>
+    <a href="admin/index.html">Administración</a>
+  </div>
+  <p style="font-size:.8rem">&copy; <span id="footer-year"></span> TableUy. Sistema de reservas para restaurantes.</p>
+</footer>
+
+<script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
+
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — TableUy</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+
+<!-- ============================================================
+     PANTALLA DE LOGIN (se muestra si no hay token)
+     ============================================================ -->
+<div id="login-screen">
+  <div class="admin-login-wrap">
+    <div class="admin-login-card">
+      <div class="admin-login-logo">
+        <h1>TableUy</h1>
+        <p>Panel de administración</p>
+      </div>
+
+      <form id="admin-login-form" novalidate>
+        <div class="form-group mb-3">
+          <label class="form-label" for="admin-password">Contraseña</label>
+          <input type="password" id="admin-password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <div id="login-error" class="alert alert-error hidden mb-3"></div>
+        <button type="submit" class="btn btn-primary w-full">Ingresar</button>
+      </form>
+
+      <p style="text-align:center;margin-top:1.5rem;font-size:.82rem;color:var(--color-text-dim)">
+        <a href="../index.html">← Volver al sitio</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PANEL PRINCIPAL (se muestra si hay token)
+     ============================================================ -->
+<div id="admin-panel" class="admin-layout hidden">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="admin-sidebar">
+    <div class="sidebar-logo">
+      TableUy
+      <span>Panel de administración</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Principal</div>
+      <a href="index.html" class="active">
+        <span class="nav-icon">📊</span> Dashboard
+      </a>
+      <a href="calendario.html">
+        <span class="nav-icon">🗓</span> Calendario
+      </a>
+
+      <div class="sidebar-section-label">Gestión</div>
+      <a href="reservas.html">
+        <span class="nav-icon">📋</span> Todas las reservas
+      </a>
+      <a href="configuracion.html">
+        <span class="nav-icon">⚙️</span> Configuración
+      </a>
+
+      <div class="sidebar-section-label">Sitio</div>
+      <a href="../reservar.html" target="_blank">
+        <span class="nav-icon">🔗</span> Ver formulario
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">Administrador</div>
+      <button class="btn btn-ghost btn-sm w-full" id="logout-btn">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div style="display:flex;align-items:center;gap:1rem">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+        <span class="topbar-title">Dashboard</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:1rem">
+        <span id="topbar-fecha" style="font-size:.85rem;color:var(--color-text-muted)"></span>
+        <button class="btn btn-primary btn-sm" onclick="openModal('modal-nueva-reserva')">+ Nueva reserva</button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div id="admin-error" class="alert alert-error hidden mb-3"></div>
+      <div id="dashboard-content">
+        <!-- Cargado por admin.js -->
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<!-- MODAL: Nueva reserva manual -->
+<div class="modal-overlay" id="modal-nueva-reserva">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Nueva reserva manual</h3>
+      <button class="modal-close" onclick="closeModal('modal-nueva-reserva')">×</button>
+    </div>
+    <form id="form-nueva-reserva">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Fecha *</label>
+          <input type="date" name="fecha" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Hora *</label>
+          <input type="time" name="hora" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Personas *</label>
+          <input type="number" name="personas" class="form-control" min="1" max="20" value="2" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nombre *</label>
+          <input type="text" name="nombre" class="form-control" required>
+        </div>
+        <div class="form-group full-width">
+          <label class="form-label">Email *</label>
+          <input type="email" name="email" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Teléfono</label>
+          <input type="tel" name="telefono" class="form-control">
+        </div>
+        <div class="form-group full-width">
+          <label class="form-label">Notas</label>
+          <textarea name="notas" class="form-control" rows="2"></textarea>
+        </div>
+        <div class="form-group full-width">
+          <label class="form-label">Alergias</label>
+          <input type="text" name="alergias" class="form-control">
+        </div>
+      </div>
+      <div class="flex justify-between mt-3 gap-2">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('modal-nueva-reserva')">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Crear reserva</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL: Detalle reserva -->
+<div class="modal-overlay" id="modal-detalle">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Detalle de reserva</h3>
+      <button class="modal-close" onclick="closeModal('modal-detalle')">×</button>
+    </div>
+    <div id="modal-detalle-content"></div>
+  </div>
+</div>
+
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/admin.js"></script>
+<script>
+  // Mostrar panel o login según token
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('topbar-fecha').textContent = new Date().toLocaleDateString('es-UY', { weekday:'long', day:'numeric', month:'long' });
+
+    if (getAdminToken()) {
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('admin-panel').classList.remove('hidden');
+    } else {
+      document.getElementById('login-screen').classList.remove('hidden');
+      document.getElementById('admin-panel').classList.add('hidden');
+    }
+  });
+</script>
+
+</body>
+</html>

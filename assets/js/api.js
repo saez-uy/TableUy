@@ -2,7 +2,7 @@
 // api.js — Comunicación con Google Apps Script
 // ============================================================
 
-const API_URL = 'TU_URL_DE_GOOGLE_APPS_SCRIPT_AQUI';
+const API_URL = 'https://script.google.com/macros/s/AKfycbwUAqhfMHPyL1cuq6R3f2wmX7D5enUWou2ZEJKZxBc7GRSBoJTVYZ4DrtpAyF4PEhTW/exec';
 
 const MAX_RETRIES = 3;
 const RETRY_BASE_DELAY = 1000;

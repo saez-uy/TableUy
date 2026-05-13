@@ -11,7 +11,7 @@ async function initAdmin() {
 function checkAuth() {
   const token = getAdminToken();
   if (!token) {
-    window.location.href = '/admin/index.html';
+    window.location.href = 'index.html';
     return false;
   }
   return true;
@@ -36,7 +36,7 @@ async function handleLogin(e) {
 
     if (result.success) {
       saveAdminToken(result.token, result.expiry);
-      window.location.href = '/admin/index.html';
+      window.location.href = 'index.html';
     } else {
       if (errorEl) { errorEl.textContent = result.error || 'Password incorrecto'; errorEl.classList.remove('hidden'); }
       btn.disabled = false;
@@ -51,7 +51,7 @@ async function handleLogin(e) {
 
 function handleLogout() {
   clearAdminToken();
-  window.location.href = '/admin/index.html';
+  window.location.href = 'index.html';
 }
 
 // ============================================================
@@ -115,7 +115,7 @@ function renderDashboard(data) {
     <div class="mt-4">
       <div class="flex justify-between items-center mb-2">
         <h3 style="font-size:1.2rem">Reservas de hoy — ${formatFechaCorta(hoy.fecha)}</h3>
-        <a href="/admin/calendario.html" class="btn btn-outline btn-sm">Ver calendario</a>
+        <a href="calendario.html" class="btn btn-outline btn-sm">Ver calendario</a>
       </div>
       ${hoy.reservas.length === 0 ? '<div class="alert alert-info">No hay reservas para hoy.</div>' :
         `<div class="table-wrapper">
@@ -405,7 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const loginForm = document.getElementById('admin-login-form');
   if (loginForm) {
-    if (getAdminToken()) { window.location.href = '/admin/index.html'; return; }
+    if (getAdminToken()) { window.location.href = 'index.html'; return; }
     loginForm.addEventListener('submit', handleLogin);
     return;
   }

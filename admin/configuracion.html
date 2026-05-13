@@ -387,7 +387,7 @@ document.getElementById('form-password').addEventListener('submit', async e => {
     if (result.error) { showAdminToast(result.error, 'error'); }
     else {
       showAdminToast('Contraseña actualizada. Debes iniciar sesión nuevamente.', 'success');
-      setTimeout(() => { clearAdminToken(); window.location.href = '/admin/index.html'; }, 2000);
+      setTimeout(() => { clearAdminToken(); window.location.href = 'index.html'; }, 2000);
     }
   } catch (e) { showAdminToast('Error al actualizar', 'error'); }
 

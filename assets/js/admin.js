@@ -36,7 +36,7 @@ async function handleLogin(e) {
 
     if (result.success) {
       saveAdminToken(result.token, result.expiry);
-      window.location.href = 'index.html';
+      window.location.reload();
     } else {
       if (errorEl) { errorEl.textContent = result.error || 'Password incorrecto'; errorEl.classList.remove('hidden'); }
       btn.disabled = false;
@@ -405,7 +405,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const loginForm = document.getElementById('admin-login-form');
   if (loginForm) {
-    if (getAdminToken()) { window.location.href = 'index.html'; return; }
     loginForm.addEventListener('submit', handleLogin);
     return;
   }
